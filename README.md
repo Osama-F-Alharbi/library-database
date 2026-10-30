@@ -6,50 +6,7 @@ book loans, and which librarian manages which book. It includes sample data,
 
 Built with **PostgreSQL**.
 
-## Database design (ERD)
-
-```mermaid
-erDiagram
-    MEMBER    ||--o{ LOAN   : "borrows"
-    BOOK      ||--o{ LOAN   : "is borrowed in"
-    BOOK      ||--o{ MANAGE : "is managed in"
-    LIBRARIAN ||--o{ MANAGE : "manages"
-
-    MEMBER {
-        int member_id PK
-        varchar name
-        varchar phone "unique"
-    }
-    BOOK {
-        int book_id PK
-        varchar title
-        varchar author
-        varchar section
-    }
-    LIBRARIAN {
-        int librarian_id PK
-        varchar name
-        varchar shift_time "Morning / Evening / Night"
-    }
-    LOAN {
-        int loan_id PK
-        int member_id FK
-        int book_id FK
-        date loan_date
-        date return_date "NULL = not returned yet"
-    }
-    MANAGE {
-        int manage_id PK
-        int book_id FK
-        int librarian_id FK
-        date assigned_date
-    }
-```
-
-- **LOAN** links members and books. One member can have many loans, and one book can be borrowed many times.
-- **MANAGE** links librarians and books. It records which librarian is assigned to which book, and when.
-
-### My design (draw.io)
+## Database design
 
 I designed the database in [draw.io](https://www.drawio.com/) before writing any SQL:
 the relational schema (left) and the ER diagram (right).
@@ -58,6 +15,9 @@ and to add the attributes that belong to each relationship (`Loan_Date`, `Return
 The editable source is [`docs/library-erd.drawio`](docs/library-erd.drawio).
 
 ![ER diagram and relational schema](docs/erd.png)
+
+- **LOAN** links members and books. One member can borrow many books, and one book can be borrowed by many members.
+- **MANAGE** links librarians and books. It records which librarian is assigned to which book, and when.
 
 ### Rules enforced by the database
 
@@ -105,14 +65,15 @@ The view `v_loan_report` in [`sql/04_views.sql`](sql/04_views.sql) saves the loa
 
 ## How to run
 
-1. Install PostgreSQL and pgAdmin 4.
-2. In pgAdmin, create a new database named `library`.
-3. Open the Query Tool on that database and run the files in order:
+You need PostgreSQL and any SQL client. I used [DBeaver](https://dbeaver.io/) (pgAdmin also works).
+
+1. Connect to your PostgreSQL server and create a new database named `library`.
+2. Open each file, make sure it runs on the `library` database, and run it in order:
    1. `sql/01_schema.sql` (creates the tables)
    2. `sql/02_sample_data.sql` (adds sample data)
-   3. `sql/03_queries.sql` (runs the queries)
+   3. `sql/03_queries.sql` (runs the queries; DBeaver shows each result in its own tab)
    4. `sql/04_views.sql` (creates the view)
-   5. `sql/05_constraint_tests.sql` (optional: each test should fail with an error)
+   5. `sql/05_constraint_tests.sql` (optional: run each test on its own; each one should fail with an error)
 
 `01_schema.sql` drops and recreates the tables, so you can run everything again from the start.
 
@@ -134,7 +95,7 @@ library-database/
 
 ## About this project
 
-- University group project (4 students), 2025. I wrote the SQL.
-- I used AI tools to help with some parts of the code, and I made sure I understood each part before using it.
-- In 2026 I converted it to PostgreSQL, fixed a query that returned no rows (Q7 used a member ID that did not exist), and added Q8 to Q10.
+- University group project (4 students), 2025. I wrote the SQL by hand.
+- Updated in 2026: converted to PostgreSQL, fixed a query that returned no rows (Q7 used a member ID
+  that did not exist), and added Q8 to Q10 and constraint tests 4 and 5. I ran and checked every file myself.
 - All names and phone numbers in the sample data are made up.
