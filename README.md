@@ -49,12 +49,15 @@ erDiagram
 - **LOAN** links members and books. One member can have many loans, and one book can be borrowed many times.
 - **MANAGE** links librarians and books. It records which librarian is assigned to which book, and when.
 
-### Original design
+### My design (draw.io)
 
-Before writing any SQL, I designed the database in [draw.io](https://www.drawio.com/):
+I designed the database in [draw.io](https://www.drawio.com/) before writing any SQL:
 the relational schema (left) and the ER diagram (right).
+In 2026 I redrew it to fix the relationship labels (both relationships are M:N)
+and to add the attributes that belong to each relationship (`Loan_Date`, `Return_Date`, `Assigned_Date`).
+The editable source is [`docs/library-erd.drawio`](docs/library-erd.drawio).
 
-![Original ER diagram and relational schema](docs/erd-original.jpeg)
+![ER diagram and relational schema](docs/erd.png)
 
 ### Rules enforced by the database
 
@@ -119,7 +122,8 @@ The view `v_loan_report` in [`sql/04_views.sql`](sql/04_views.sql) saves the loa
 library-database/
 ├── README.md
 ├── docs/
-│   └── erd-original.jpeg
+│   ├── erd.png
+│   └── library-erd.drawio
 └── sql/
     ├── 01_schema.sql
     ├── 02_sample_data.sql
